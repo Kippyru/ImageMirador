@@ -14,7 +14,8 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-                  <MenuItem mnemonicParsing="false" onAction="#openMethod" text="Open">
+                                                <!-- Bueno si acá le cambié el nombre para que coincida con el metodito del service jejeje -->
+                  <MenuItem mnemonicParsing="false" onAction="#openMethod"  text="Open">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
@@ -37,6 +38,6 @@
           </Menu>
         </menus>
       </MenuBar>
-      <ImageView fx:id="ventanaImagen" fitHeight="379.0" fitWidth="601.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imageWindow " fitHeight="379.0" fitWidth="601.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </VBox>
