@@ -3,17 +3,25 @@ package org.dsf.imagemirador.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Window;
+import org.dsf.imagemirador.Dto.MediaItem;
+import org.dsf.imagemirador.Service.FileScannerService;
+
+import java.util.Optional;
 
 public class MainController {
 
     @FXML
     private ImageView ventanaImagen;
 
+    private final FileScannerService fileScannerService = new FileScannerService();
+
     @FXML
     public void initialize() {
         ventanaImagen.setPreserveRatio(true);   //esto es para que no se deforme toda la imagen, osea preservar el ratio
-        // ventanaImagen.setSmooth(true);       //y esto es para filtrar creo? noc, en la doc de oracle dice algo de eso
-                                                //sii creo abria que sacarlo y no usar filtro ya que podria alterar la imagen original
+        ventanaImagen.setSmooth(true);       //y esto es para filtrar creo? noc, en la doc de oracle dice algo de eso
+        //sii creo abria que sacarlo y no usar filtro ya que podria alterar la imagen original.
+        //testing no me mostró ninguna alteración importante hasta ahora (08-07-26). Queda presente el filtro por ahora.
 
 
         //esto es para que la imagen se ajuste a su contenedor
@@ -24,21 +32,26 @@ public class MainController {
                 ventanaImagen.fitHeightProperty().bind(contenedor.heightProperty());
             }
         });
-
-        //aca buscamos la imagen
-        Image image = new Image(getClass().getResourceAsStream("/org/dsf/imagemirador/TestImage/test.jpg"));
-
-        //y aca la muestra
-        ventanaImagen.setImage(image);
     }
 
     //aca el boton del menu para abrir, tengo que hacer que pueda abrir otras imagenes
-    public void openMethod() {
-        System.out.println("open uwu");
+    @FXML
+    public void abrirImagen() {
+        System.out.println("Snif snif SNIIIF a ver busco tu cuestión...");
+        Window window = ventanaImagen.getScene().getWindow();
+        Optional<MediaItem> item = fileScannerService.abrirImagen(window);
+
+        item.ifPresent(mediaItem -> {
+            Image image = new Image(mediaItem.path());
+            ventanaImagen.setImage(image);
+            System.out.println("Con un guau y un miau, lo encontré! Acá está uwu");
+        });
+
     }
+
     //y este lo cierra dah, tengo que ver si cierra la app, o cierra la imagen, noc
     //bah puse el shortcut ctrl w porq imagino cierra la imagen y no la app
-    public void closeMethod(){
-        System.out.println("clsoe uwu");
+    public void closeMethod() {
+        System.out.println("closeada tu wea >:3c");
     }
 }

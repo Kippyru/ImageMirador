@@ -1,4 +1,6 @@
 package org.dsf.imagemirador.Dto;
 
-public class MediaItem {
+public record MediaItem(String path, String name, String type) {
+
+
 }
