@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class FileScannerService {
 
-    public Optional<MediaItem> abrirImagen(Window window) {
+    public Optional<MediaItem> openMethod(Window window) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Snif snif ¿qué archivo querés ver?");
 

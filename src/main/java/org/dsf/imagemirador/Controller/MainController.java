@@ -36,10 +36,10 @@ public class MainController {
 
     //aca el boton del menu para abrir, tengo que hacer que pueda abrir otras imagenes
     @FXML
-    public void abrirImagen() {
+    public void openMethod() {
         System.out.println("Snif snif SNIIIF a ver busco tu cuestión...");
         Window window = ventanaImagen.getScene().getWindow();
-        Optional<MediaItem> item = fileScannerService.abrirImagen(window);
+        Optional<MediaItem> item = fileScannerService.openMethod(window);
 
         item.ifPresent(mediaItem -> {
             Image image = new Image(mediaItem.path());
