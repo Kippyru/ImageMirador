@@ -12,24 +12,24 @@ import java.util.Optional;
 public class MainController {
 
     @FXML
-    private ImageView ventanaImagen;
+    private ImageView imageWindow ;
 
     private final FileScannerService fileScannerService = new FileScannerService();
 
     @FXML
     public void initialize() {
-        ventanaImagen.setPreserveRatio(true);   //esto es para que no se deforme toda la imagen, osea preservar el ratio
-        ventanaImagen.setSmooth(true);       //y esto es para filtrar creo? noc, en la doc de oracle dice algo de eso
+        imageWindow .setPreserveRatio(true);   //esto es para que no se deforme toda la imagen, osea preservar el ratio
+        imageWindow .setSmooth(true);       //y esto es para filtrar creo? noc, en la doc de oracle dice algo de eso
         //sii creo abria que sacarlo y no usar filtro ya que podria alterar la imagen original.
         //testing no me mostró ninguna alteración importante hasta ahora (08-07-26). Queda presente el filtro por ahora.
 
 
         //esto es para que la imagen se ajuste a su contenedor
-        ventanaImagen.sceneProperty().addListener((observable, oldScene, newScene) -> {
+        imageWindow .sceneProperty().addListener((observable, oldScene, newScene) -> {
             if (newScene != null) {
-                javafx.scene.layout.Region contenedor = (javafx.scene.layout.Region) ventanaImagen.getParent();
-                ventanaImagen.fitWidthProperty().bind(contenedor.widthProperty());
-                ventanaImagen.fitHeightProperty().bind(contenedor.heightProperty());
+                javafx.scene.layout.Region contenedor = (javafx.scene.layout.Region) imageWindow .getParent();
+                imageWindow .fitWidthProperty().bind(contenedor.widthProperty());
+                imageWindow .fitHeightProperty().bind(contenedor.heightProperty());
             }
         });
     }

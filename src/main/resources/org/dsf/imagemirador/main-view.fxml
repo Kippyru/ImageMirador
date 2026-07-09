@@ -38,6 +38,6 @@
           </Menu>
         </menus>
       </MenuBar>
-      <ImageView fx:id="ventanaImagen" fitHeight="379.0" fitWidth="601.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imageWindow " fitHeight="379.0" fitWidth="601.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </VBox>
