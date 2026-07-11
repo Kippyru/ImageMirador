@@ -38,12 +38,12 @@ public class MainController {
     @FXML
     public void openMethod() {
         System.out.println("Snif snif SNIIIF a ver busco tu cuestión...");
-        Window window = ventanaImagen.getScene().getWindow();
+        Window window = imageWindow.getScene().getWindow();
         Optional<MediaItem> item = fileScannerService.openMethod(window);
 
         item.ifPresent(mediaItem -> {
             Image image = new Image(mediaItem.path());
-            ventanaImagen.setImage(image);
+            imageWindow.setImage(image);
             System.out.println("Con un guau y un miau, lo encontré! Acá está uwu");
         });
 
