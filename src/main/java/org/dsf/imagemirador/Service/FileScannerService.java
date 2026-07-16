@@ -1,38 +1,62 @@
 package org.dsf.imagemirador.Service;
 
-import javafx.stage.FileChooser;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 import org.dsf.imagemirador.Dto.MediaItem;
 
 import java.io.File;
-import java.util.Optional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FileScannerService {
 
-    public Optional<MediaItem> openMethod(Window window) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Snif snif ¿qué archivo querés ver?");
+    private static final List<String> SUPPORTED_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".gif", ".bmp");
 
-        // Esto es para filtrar, deja esas extensiones nomásh, sino te muestra extensiones no disponibles todavía guau guau grrr
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Imágenes", "*.jpg", "*.png", "*.bmp", "*.gif") //el * es para aceptar cualquier nombre, mientras termine con .jpg/png/.gif
-                // te va a mostrar el archivo
-                // Taaambién le añadí el formato bmp, de onda nomás jaja
-        );
+    public List<MediaItem> openMethod(Window window) {
+        //cambiado filechooser por directorychooser, por ahora está bien
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Selecciona tu carpeta con archivos uwu");
 
-        // Abroo el coso de Windows para elegir la wea a mostrar
-        File file = fileChooser.showOpenDialog(window);
+        // Abre el diálogo para elegir la carpeta, aviso que testeando veo que NO se actualiza en tiempo real; no muestra imágenes nuevas y las que se quiten dan blanco,
+        // pero siguen ocupando el espacio en el array, capaaaz con un "refresh" cada tantito se resuelva? Más adelante veré
+        File selectedDirectory = directoryChooser.showDialog(window);
 
-        if (file != null) {
-
-            String path = file.toURI().toString(); //JavaFX Image quiere si o si el formato ese URL (file://..)
-            String name = file.getName();
-            String type = "IMAGE";
-
-            return Optional.of(new MediaItem(path, name, type));
+        // carpeta vacía, devuelve array vacío
+        if (selectedDirectory == null) {
+            return new ArrayList<>();
         }
 
-        // No elegiste nada bueno no retorna nada c:
-        return Optional.empty();
+        return scanDirectory(selectedDirectory.toPath());
+    }
+
+    private List<MediaItem> scanDirectory(Path directoryPath) {
+        // esto de acá es para ver solamente archivos superficiales sin entrar a subcarpetitas, por ahora está bien pero más adelante podríamos cambiarlo
+        // a Files.walk para explorar subdirectorios
+        try (Stream<Path> paths = Files.list(directoryPath)) {
+            return paths
+                    .filter(Files::isRegularFile) // mira si el archivo está ahi en la superficie nomás
+                    .filter(this::isSupportedFile) // y acá filtra dentro del directorio
+                    .map(path -> new MediaItem(
+                            path.toUri().toString(),
+                            path.getFileName().toString(),
+                            "IMAGE"
+                    ))
+                    .collect(Collectors.toList()); // Lo convierte a List<MediaItem>
+        } catch (IOException e) {
+            System.err.println("Ehmm... rrror al leer la carpeta: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    private boolean isSupportedFile(Path path) {
+        // testeando aprendí que las extensiones pueden ser mayúsculas, y eso hace que dejen de ser aceptadas.
+        // Esto lo arreglamos haciendo que todito se vuelva minúscula y listoo.
+        String fileName = path.getFileName().toString().toLowerCase();
+        return SUPPORTED_EXTENSIONS.stream().anyMatch(fileName::endsWith);
     }
 }
