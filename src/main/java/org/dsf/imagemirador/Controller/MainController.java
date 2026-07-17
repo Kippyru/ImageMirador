@@ -11,12 +11,12 @@ import javafx.stage.Window;
 import org.dsf.imagemirador.Dto.MediaItem;
 import org.dsf.imagemirador.Service.FileScannerService;
 
-import java.util.Optional;
+import java.util.List;
 
 public class MainController {
 
     @FXML
-    private ImageView imageWindow ;
+    private ImageView imageWindow;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -29,11 +29,15 @@ public class MainController {
 
     private final FileScannerService fileScannerService = new FileScannerService();
 
+    // la lista y el index para el array de archivos dentro de la carpeta que seleccionemos
+    private List<MediaItem> listFiles;
+    private int index = 0;
+
     @FXML
     public void initialize() {
-        imageWindow .setPreserveRatio(true);    //esto es para que no se deforme toda la imagen, preservar el ratio
-            imageWindow .setSmooth(true);       //testing no me mostró ninguna alteración importante hasta ahora (08-07-26)
-                                                //queda presente el filtro
+        imageWindow.setPreserveRatio(true);    //esto es para que no se deforme toda la imagen, preservar el ratio
+        imageWindow.setSmooth(true);           //testing no me mostró ninguna alteración importante hasta ahora (08-07-26)
+                                               //queda presente el filtro
     }
 
     //aca el boton del menu para abrir, tengo que hacer que pueda abrir otras imagenes
@@ -41,38 +45,57 @@ public class MainController {
     public void openMethod() {
         System.out.println("Snif snif SNIIIF a ver busco tu cuestión...");
         Window window = imageWindow.getScene().getWindow();
-        Optional<MediaItem> item = fileScannerService.openMethod(window);
+        //bueno acá el arraay, chequeos y reiniciado de index
+        List<MediaItem> newFiles = fileScannerService.openMethod(window);
 
-        item.ifPresent(mediaItem -> {
-            Image image = new Image(mediaItem.path());
-            //soltamos bindings anteriores por si quedaron
-            imageWindow.fitWidthProperty().unbind();
-            imageWindow.fitHeightProperty().unbind();
+        if (newFiles != null && !newFiles.isEmpty()) {
+            this.listFiles = newFiles;
+            this.index = 0; // Reiniciamos el índice a la primera imagen
 
-            //hacemos visible imageview y carga de la imagen
-            imageWindow.setVisible(true);
-            imageWindow.setManaged(true);
-            imageWindow.setImage(image);
+            System.out.println("Guau guau! Encontré " + listFiles.size() + " archivos compatibles!");
+            showFile();
+        } else {
+            System.out.println("Snif snif, no encontré ningún archivo compatible en esta carpeta...");
+        }
+    }
 
-            //reinicio de transformaciones
-            imageWindow.setRotate(0);
-            imageWindow.setScaleX(1);
-            imageWindow.setScaleY(1);
-            //reinicia el zoom, tambien lo hace el de restaurar, hay que separarlo en una funcion aparte
-            zoom = 1.0;
-            imageGroup.setScaleX(zoom);
-            imageGroup.setScaleY(zoom);
+    private void showFile() {
+        if (listFiles == null || listFiles.isEmpty()) return;
 
-            if (checkMirror != null) {
-                checkMirror.setSelected(false);
-            }
-            //esto bindea la imagen a los bordes, para que se ajuste automaticamente
-            if (scrollPane != null) {
-                imageWindow.fitWidthProperty().bind(scrollPane.widthProperty());
-                imageWindow.fitHeightProperty().bind(scrollPane.heightProperty());
-            }
-            System.out.println("Con un guau y un miau, lo encontré! Acá está uwu");
-        });
+        // Obtenemos la imagen actual de la lista usando el índice
+        MediaItem currentItem = listFiles.get(index);
+        Image image = new Image(currentItem.path());
+
+        // soltamos bindings anteriores por si quedaron
+        imageWindow.fitWidthProperty().unbind();
+        imageWindow.fitHeightProperty().unbind();
+
+        // hacemos visible imageview y carga de la imagen
+        imageWindow.setVisible(true);
+        imageWindow.setManaged(true);
+        imageWindow.setImage(image);
+
+        // reinicio de transformaciones
+        imageWindow.setRotate(0);
+        imageWindow.setScaleX(1);
+        imageWindow.setScaleY(1);
+
+        // reinicia el zoom
+        zoom = 1.0;
+        imageGroup.setScaleX(zoom);
+        imageGroup.setScaleY(zoom);
+
+        if (checkMirror != null) {
+            checkMirror.setSelected(false);
+        }
+
+        // esto bindea la imagen a los bordes, para que se ajuste automaticamente
+        if (scrollPane != null) {
+            imageWindow.fitWidthProperty().bind(scrollPane.widthProperty());
+            imageWindow.fitHeightProperty().bind(scrollPane.heightProperty());
+        }
+
+        System.out.println("Con un guau y un miau, lo encontré! Acá está uwu");
     }
 
     //este cierra la imagen. ctrl + w
@@ -147,13 +170,36 @@ public class MainController {
     }
 
     //navegacion, puse alt + right, porq right solo a veces no funciona, o si apreto para rotar tambien cuenta y rota y cambia de imagen
+//navegacion, puse alt + right, porq right solo a veces no funciona, o si apreto para rotar tambien cuenta y rota y cambia de imagen
     @FXML
     public void rightMethod() {
-        System.out.println("derecha uwu");
+        // no encuentro nada = hacer nada
+        if (listFiles == null || listFiles.isEmpty()) return;
+        //+1 al index para mostrar lo siguiente en el array (que tiene cargados los archivos)
+        index++;
+
+        // Si nos pasamos de la cantidad de imágenes, volvemos a la primera (índice 0)
+        if (index >= listFiles.size()) {
+            index = 0;
+        }
+
+        showFile();
+        System.out.println("derecha uwu -> Viendo archivo " + (index + 1) + " de " + listFiles.size());
     }
 
     @FXML
     public void leftMethod() {
-        System.out.println("izquierda uwu");
+        // no encuentro nada = hacer nada (otra vez)
+        if (listFiles == null || listFiles.isEmpty()) return;
+        // -1 al index para mostrar lo siguiente en el array (que tiene cargados los archivos)
+        index--; // Restamos 1 al índice
+
+        // esto para ir a la última imágen nomás, miro el tamaño del array y le resto 1 para que el index sea justamente la última
+        if (index < 0) {
+            index = listFiles.size() - 1;
+        }
+
+        showFile();
+        System.out.println("izquierda uwu -> Viendo archivo " + (index + 1) + " de " + listFiles.size());
     }
 }
