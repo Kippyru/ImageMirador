@@ -37,7 +37,7 @@ public class MainController {
     public void initialize() {
         imageWindow.setPreserveRatio(true);    //esto es para que no se deforme toda la imagen, preservar el ratio
         imageWindow.setSmooth(true);           //testing no me mostró ninguna alteración importante hasta ahora (08-07-26)
-                                               //queda presente el filtro
+        //queda presente el filtro
     }
 
     //aca el boton del menu para abrir, tengo que hacer que pueda abrir otras imagenes
@@ -62,25 +62,25 @@ public class MainController {
     private void showFile() {
         if (listFiles == null || listFiles.isEmpty()) return;
 
-        // Obtenemos la imagen actual de la lista usando el índice
+        //Obtenemos la imagen actual de la lista usando el índice
         MediaItem currentItem = listFiles.get(index);
         Image image = new Image(currentItem.path());
 
-        // soltamos bindings anteriores por si quedaron
+        //soltamos bindings anteriores por si quedaron
         imageWindow.fitWidthProperty().unbind();
         imageWindow.fitHeightProperty().unbind();
 
-        // hacemos visible imageview y carga de la imagen
+        //hacemos visible imageview y carga de la imagen
         imageWindow.setVisible(true);
         imageWindow.setManaged(true);
         imageWindow.setImage(image);
 
-        // reinicio de transformaciones
+        //reinicio de transformaciones
         imageWindow.setRotate(0);
         imageWindow.setScaleX(1);
         imageWindow.setScaleY(1);
 
-        // reinicia el zoom
+        //reinicia el zoom
         zoom = 1.0;
         imageGroup.setScaleX(zoom);
         imageGroup.setScaleY(zoom);
@@ -170,7 +170,6 @@ public class MainController {
     }
 
     //navegacion, puse alt + right, porq right solo a veces no funciona, o si apreto para rotar tambien cuenta y rota y cambia de imagen
-//navegacion, puse alt + right, porq right solo a veces no funciona, o si apreto para rotar tambien cuenta y rota y cambia de imagen
     @FXML
     public void rightMethod() {
         // no encuentro nada = hacer nada
