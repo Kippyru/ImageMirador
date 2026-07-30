@@ -9,6 +9,7 @@ module org.kevin.imagemirador {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
+    requires org.kordamp.ikonli.core;
 
     opens org.dsf.imagemirador to javafx.fxml;
     exports org.dsf.imagemirador;
