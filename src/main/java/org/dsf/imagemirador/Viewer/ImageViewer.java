@@ -19,14 +19,14 @@ public class ImageViewer {
     private static final double ZOOM_SENSITIVITY = 0.1;
     private double zoom = 1.0;
 
-    // Bueno acá va a recibir cada cuestión de la imageenn
+    // acá recibirá cada cuestión de la imagén
     public ImageViewer(ImageView imageWindow, ScrollPane scrollPane, Group imageGroup, CheckMenuItem checkMirror) {
         this.imageWindow = imageWindow;
         this.scrollPane = scrollPane;
         this.imageGroup = imageGroup;
         this.checkMirror = checkMirror;
 
-        //filtritooos
+        //filtros para mantener el ratio
         this.imageWindow.setPreserveRatio(true);
         this.imageWindow.setSmooth(true);
     }

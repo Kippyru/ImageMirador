@@ -9,7 +9,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.stage.Window;
 import org.dsf.imagemirador.Dto.MediaItem;
 import org.dsf.imagemirador.Service.FileScannerService;
-import org.dsf.imagemirador.Viewer.ImageViewer; // Asegúrate de importar tu nueva clase
+import org.dsf.imagemirador.Viewer.ImageViewer;
 
 import java.util.List;
 
