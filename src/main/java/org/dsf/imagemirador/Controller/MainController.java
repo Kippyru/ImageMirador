@@ -6,10 +6,12 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.media.MediaView;
 import javafx.stage.Window;
 import org.dsf.imagemirador.Dto.MediaItem;
 import org.dsf.imagemirador.Service.FileScannerService;
 import org.dsf.imagemirador.Viewer.ImageViewer;
+import org.dsf.imagemirador.Viewer.MediaViewer;
 
 import java.util.List;
 
@@ -19,6 +21,8 @@ public class MainController {
     @FXML private ScrollPane scrollPane;
     @FXML private Group imageGroup;
     @FXML private CheckMenuItem checkMirror;
+    @FXML private MediaView mediaWindow;
+
 
     private final FileScannerService fileScannerService = new FileScannerService();
     private ImageViewer imageViewer;
@@ -30,6 +34,7 @@ public class MainController {
     public void initialize() {
         // le pasamos los elementos al controller imageviewer
         imageViewer = new ImageViewer(imageWindow, scrollPane, imageGroup, checkMirror);
+        mediaViewer = new MediaViewer(mediaWindow);
     }
 
     @FXML
@@ -57,9 +62,9 @@ public class MainController {
     @FXML
     public void closeMethod() {
         System.out.println("closeada tu wea >:3c");
-        imageViewer.clear(); // impia la vista
+        imageViewer.clear(); // limpia la vista
         if (listFiles != null) {
-            listFiles.clear(); // Limpiamos la memoria
+            listFiles.clear(); // limpia la memoria
         }
     }
 
@@ -99,6 +104,9 @@ public class MainController {
     public void restoreMethod() {
         imageViewer.restore();
     }
+
+    private MediaViewer mediaViewer;
+
 
     //navegacion, puse alt + right, porq right solo a veces no funciona, o si apreto para rotar tambien cuenta y rota y cambia de imagen
     @FXML
