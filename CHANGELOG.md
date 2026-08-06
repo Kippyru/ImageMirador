@@ -18,5 +18,14 @@
 - 30072026 Tommy
   - Refactorización de MainController. Invoca los methods del nuevo controlador imageViewer.
 
+- 05082026 Tommy
+  - Añadido controller MediaViewer para la reproducción de .mp4. 
+  - Ajustados formatos aceptables en el FileScannerService.
+  - Añadida la base de interacción entre los controllers main y mediaViewer.
+  - Ajustado main-view.fxml para mediaWindow.
 
--
+- 06082026 Tommy
+  - Ajustado MainController para trabajar correctamente con formato .mp4. 
+  - Visualización de videos primitiva lista!
+  - Añadido switch para imágenes/videos, deja visualizar con el mismo botón (file -> open) imágenes y videos desde la misma carpeta en la misma ventana.
+  

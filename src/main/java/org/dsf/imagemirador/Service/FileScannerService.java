@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 public class FileScannerService {
 
-    private static final List<String> SUPPORTED_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".gif", ".bmp");
+    private static final List<String> SUPPORTED_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".gif", ".jfif", ".bmp", ".mp4", ".mov");
 
     public List<MediaItem> openMethod(Window window) {
         //cambiado filechooser por directorychooser, por ahora está bien

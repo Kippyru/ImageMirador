@@ -11,6 +11,7 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.media.MediaView?>
 
 <VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dsf.imagemirador.Controller.MainController">
     <children>
@@ -95,6 +96,7 @@
 
                     <Group fx:id="imageGroup" onScroll="#scrollZoomMethod">
                         <ImageView fx:id="imageWindow" preserveRatio="true" />
+                        <MediaView fx:id="mediaWindow" managed="false" visible="false" />
                     </Group>
 
                 </StackPane>

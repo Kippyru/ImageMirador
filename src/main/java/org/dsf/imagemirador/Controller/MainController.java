@@ -29,7 +29,7 @@ public class MainController {
 
     private List<MediaItem> listFiles;
     private int index = 0;
-
+    private MediaViewer mediaViewer;
     @FXML
     public void initialize() {
         // le pasamos los elementos al controller imageviewer
@@ -55,8 +55,25 @@ public class MainController {
 
     private void showFile() {
         if (listFiles == null || listFiles.isEmpty()) return;
-        //coso que carga el archivo desde imageviewerr
-        imageViewer.showImage(listFiles.get(index));
+
+        MediaItem currentItem = listFiles.get(index);
+
+        // limpiamos los 2 visores por las dudas
+        imageViewer.clear();
+        mediaViewer.clear();
+
+        // forzamos toodo a minúsculas para validar
+        String path = currentItem.path().toLowerCase();
+
+        // switch para ver si es vid o img
+        if (path.endsWith(".mp4") || path.endsWith(".mov")) {
+            // si es formato mp4 o mov viene mediaviewer
+            System.out.println("Encontré tu videooo, agarra croquetas que empieza");
+            mediaViewer.loadMedia(currentItem);
+        } else {
+            // si no es video, se lo mandamos al ImageViewer
+            imageViewer.showImage(currentItem);
+        }
     }
 
     @FXML
@@ -104,9 +121,6 @@ public class MainController {
     public void restoreMethod() {
         imageViewer.restore();
     }
-
-    private MediaViewer mediaViewer;
-
 
     //navegacion, puse alt + right, porq right solo a veces no funciona, o si apreto para rotar tambien cuenta y rota y cambia de imagen
     @FXML

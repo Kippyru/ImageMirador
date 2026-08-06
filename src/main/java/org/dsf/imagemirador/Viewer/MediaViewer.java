@@ -1,5 +1,6 @@
 package org.dsf.imagemirador.Viewer;
 
+import javafx.scene.control.ScrollPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -7,44 +8,51 @@ import javafx.util.Duration;
 import org.dsf.imagemirador.Dto.MediaItem;
 
 public class MediaViewer {
-
-    // El componente visual que recibimos desde el FXML
     private final MediaView mediaView;
 
-    // El motor de reproducción
+    // motor de reproducción
     private MediaPlayer mediaPlayer;
+    private ScrollPane scrollPane;
 
     public MediaViewer(MediaView mediaView) {
         this.mediaView = mediaView;
 
-        // Configuraciones iniciales (para que el video se ajuste a la ventana, igual que las imágenes)
+
+        //el video se ajusta a la ventana
         this.mediaView.setPreserveRatio(true);
+
     }
 
     public void loadMedia(MediaItem item) {
         if (item == null) return;
 
-        // 1. Limpiamos cualquier video que se estuviera reproduciendo antes
+        //limpiar img o vid que se estaba viendo
         clear();
 
+
         try {
-            // 2. Cargamos el archivo físico
+            // agarra el path del file
             Media media = new Media(item.path());
 
-            // 3. Creamos el motor de reproducción
+            // hacemos el nuevo reproductor
             mediaPlayer = new MediaPlayer(media);
 
-            // 4. Conectamos el motor a la "pantalla" (MediaView)
+            if (scrollPane != null) {
+                mediaView.fitWidthProperty().bind(scrollPane.widthProperty());
+                mediaView.fitHeightProperty().bind(scrollPane.heightProperty());
+            }
+
+            // enchufaaa a la pantalla MediaView, lo hace mediaplayer al... si, al mediaplayer(nuestro)
             mediaView.setMediaPlayer(mediaPlayer);
 
-            // 5. Hacemos visible el MediaView
+            // hacemos visible
             mediaView.setVisible(true);
             mediaView.setManaged(true);
 
-            // Opcional: Auto-reproducir cuando carga
-            // mediaPlayer.setAutoPlay(true);
+            // esto de acá es para activar el autoplay
+            mediaPlayer.setAutoPlay(true);
 
-            System.out.println("Video cargado: " + item.name());
+            System.out.println("Video cargado! Ahora reproduciendo...  " + item.name());
 
         } catch (Exception e) {
             System.out.println("Error al cargar el video: " + e.getMessage());
@@ -65,19 +73,22 @@ public class MediaViewer {
 
     public void resetMedia() {
         if (mediaPlayer != null) {
-            mediaPlayer.seek(Duration.ZERO); // Forma abreviada de Duration.ofSeconds(0.0)
+            mediaPlayer.seek(Duration.ZERO); // esto es para resetear la duración, necesita ajustes porque creo que se entorpece con el restore de imageviewer
+                                            // yo sugiero que veamos esto más adelante, cuando refactoricemos más el main
         }
     }
 
-    // Métdo vital para evitar fugas de memoria (memory leaks) o audios superpuestos
+    // clearrr, estoy pensando en tal vez añadir esto a un eventual controller de (valga la redundancia) controles (next, prev, + - volumen, etc)
     public void clear() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
-            mediaPlayer.dispose(); // Libera los recursos del motor
+            mediaPlayer.dispose(); // libera recursos del motor
             mediaPlayer = null;
+            System.out.println("Limpiado el motooor mediaPlayer!");
         }
-        //mediaView.setImage(null); // Limpiamos la vista
+        mediaView.setMediaPlayer(null); // limpiamos la vista/pantalla
         mediaView.setVisible(false);
         mediaView.setManaged(false);
+        System.out.println("Limpiada la pantalla mediaView!");
     }
 }
