@@ -1,34 +1,49 @@
 package org.dsf.imagemirador.Controller;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.dsf.imagemirador.Dto.MediaItem;
 import org.dsf.imagemirador.Service.FileScannerService;
 import org.dsf.imagemirador.Viewer.ImageViewer;
+import org.dsf.imagemirador.Viewer.NavigationViewer;
 
+import java.io.File;
 import java.util.List;
 
 public class MainController {
 
-    @FXML private ImageView imageWindow;
-    @FXML private ScrollPane scrollPane;
-    @FXML private Group imageGroup;
-    @FXML private CheckMenuItem checkMirror;
+    @FXML
+    private ImageView imageWindow;
+    @FXML
+    private ScrollPane scrollPane;
+    @FXML
+    private Group imageGroup;
+    @FXML
+    private CheckMenuItem checkMirror;
+    @FXML
+    private CheckMenuItem alwaysOnTop;
 
     private final FileScannerService fileScannerService = new FileScannerService();
+    private final NavigationViewer navigator = new NavigationViewer();
     private ImageViewer imageViewer;
+    private Stage stage;
 
-    private List<MediaItem> listFiles;
-    private int index = 0;
+    //el controlador recibe el Stage
+    public void setStage(Stage stage) {
+        this.stage = stage;
+        imageViewer.setStage(stage); //sin esto no anda, la cosa es que es un codigo que se repite lo anterior, no?
+    }
 
     @FXML
     public void initialize() {
-        // le pasamos los elementos al controller imageviewer
         imageViewer = new ImageViewer(imageWindow, scrollPane, imageGroup, checkMirror);
     }
 
@@ -36,86 +51,92 @@ public class MainController {
     public void openMethod() {
         System.out.println("Snif snif SNIIIF a ver busco tu cuestión...");
         Window window = imageWindow.getScene().getWindow();
-        List<MediaItem> newFiles = fileScannerService.openMethod(window);
 
-        if (newFiles != null && !newFiles.isEmpty()) {
-            this.listFiles = newFiles;
-            this.index = 0;
-            System.out.println("Guau guau! Encontré " + listFiles.size() + " archivos compatibles!");
-            showFile();
-        } else {
-            System.out.println("Snif snif, no encontré ningún archivo compatible en esta carpeta...");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Elegí un archivo");
+
+        //filtro de extenciones
+        fileChooser.getExtensionFilters().add(fileScannerService.getSupportedExtensionsFilter());
+
+        //filtro de todos los archivos
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
+        );
+
+        File lastDir = fileScannerService.getLastDirectory();
+        if (lastDir != null && lastDir.exists()) {
+            fileChooser.setInitialDirectory(lastDir);
+        }
+
+        File selectedFile = fileChooser.showOpenDialog(window);
+        if (selectedFile == null) {
+            System.out.println("Selección cance-helada");
+            return;
+        }
+
+        //se crea el Task para seleccionar archivos
+        Task<List<MediaItem>> scanTask = fileScannerService.createScanTask(selectedFile);
+
+        scanTask.setOnSucceeded(event -> {
+            List<MediaItem> loadedFiles = scanTask.getValue();
+            int startingIndex = fileScannerService.getSelectedFileIndex();
+
+            if (loadedFiles != null && !loadedFiles.isEmpty()) {
+                navigator.load(loadedFiles, startingIndex);
+                System.out.println("Guau guau! Encontré " + navigator.getTotal() + " archivos compatibles!");
+                imageViewer.showImage(navigator.getCurrent());
+            } else {
+                System.out.println("Snif snif, no encontré ningún archivo compatible...");
+            }
+        });
+
+        scanTask.setOnFailed(event -> {
+            System.err.println("Error fatal... CHOVER");
+            scanTask.getException().printStackTrace();
+        });
+
+        //ejecuta el hilo
+        Thread thread = new Thread(scanTask);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    @FXML
+    public void rightMethod() {
+        MediaItem nextItem = navigator.next();
+        if (nextItem != null) {
+            imageViewer.showImage(nextItem);
+            System.out.println("Derecha uwu -> Viendo archivo " + (navigator.getIndex() + 1) + " de " + navigator.getTotal());
         }
     }
 
-    private void showFile() {
-        if (listFiles == null || listFiles.isEmpty()) return;
-        //coso que carga el archivo desde imageviewerr
-        imageViewer.showImage(listFiles.get(index));
+    @FXML
+    public void leftMethod() {
+        MediaItem prevItem = navigator.previous();
+        if (prevItem != null) {
+            imageViewer.showImage(prevItem);
+            System.out.println("Izquierda uwu -> Viendo archivo " + (navigator.getIndex() + 1) + " de " + navigator.getTotal());
+        }
     }
 
     @FXML
     public void closeMethod() {
-        System.out.println("closeada tu wea >:3c");
-        imageViewer.clear(); // impia la vista
-        if (listFiles != null) {
-            listFiles.clear(); // Limpiamos la memoria
-        }
+        imageViewer.clear();
+        navigator.clear();
+        System.out.println("Vista limpiada >:3c");
     }
 
-
-    @FXML
-    public void rotateRightMethod() {
-        imageViewer.rotateRight();
-    }
-
-    @FXML
-    public void rotateLeftMethod() {
-        imageViewer.rotateLeft();
-    }
-
-    @FXML
-    public void mirrorMethod() {
-        imageViewer.mirror(checkMirror.isSelected());
-    }
-
-    @FXML
-    public void plusZoomMethod() {
-        imageViewer.zoomIn();
-    }
-
-    @FXML
-    public void minusZoomMethod() {
-        imageViewer.zoomOut();
-    }
+    @FXML public void alwaysOnTopMethod() { imageViewer.alwaysOnTop(alwaysOnTop.isSelected()); } //LITERALMENTE YO
+    @FXML public void rotateRightMethod() { imageViewer.rotateRight(); }
+    @FXML public void rotateLeftMethod() { imageViewer.rotateLeft(); }
+    @FXML public void mirrorMethod() { imageViewer.mirror(checkMirror.isSelected()); }
+    @FXML public void plusZoomMethod() { imageViewer.zoomIn(); }
+    @FXML public void minusZoomMethod() { imageViewer.zoomOut(); }
+    @FXML public void restoreMethod() { imageViewer.restore(); }
 
     @FXML
     public void scrollZoomMethod(ScrollEvent event) {
         imageViewer.scrollZoom(event.getDeltaY());
         event.consume();
-    }
-
-    @FXML
-    public void restoreMethod() {
-        imageViewer.restore();
-    }
-
-    //navegacion, puse alt + right, porq right solo a veces no funciona, o si apreto para rotar tambien cuenta y rota y cambia de imagen
-    @FXML
-    public void rightMethod() {
-        if (listFiles == null || listFiles.isEmpty()) return;
-        index++;
-        if (index >= listFiles.size()) index = 0;
-        showFile();
-        System.out.println("derecha uwu -> Viendo archivo " + (index + 1) + " de " + listFiles.size());
-    }
-
-    @FXML
-    public void leftMethod() {
-        if (listFiles == null || listFiles.isEmpty()) return;
-        index--;
-        if (index < 0) index = listFiles.size() - 1;
-        showFile();
-        System.out.println("izquierda uwu -> Viendo archivo " + (index + 1) + " de " + listFiles.size());
     }
 }
