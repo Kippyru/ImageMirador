@@ -73,6 +73,11 @@
                                 <KeyCodeCombination alt="UP" code="M" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                             </accelerator>
                         </CheckMenuItem>
+                  <CheckMenuItem fx:id="alwaysOnTop" mnemonicParsing="false" onAction="#alwaysOnTopMethod" text="Pin">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="SPACE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </CheckMenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#restoreMethod" text="Restore">
                             <accelerator>

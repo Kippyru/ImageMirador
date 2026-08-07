@@ -1,5 +1,3 @@
-// entonces aca hay que refactorizar el maincontroller
-
 package org.dsf.imagemirador.Viewer;
 
 import javafx.scene.Group;
@@ -7,6 +5,7 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import org.dsf.imagemirador.Dto.MediaItem;
 
 public class ImageViewer {
@@ -15,6 +14,7 @@ public class ImageViewer {
     private final ScrollPane scrollPane;
     private final Group imageGroup;
     private final CheckMenuItem checkMirror;
+    private Stage stage;
 
     private static final double ZOOM_SENSITIVITY = 0.1;
     private double zoom = 1.0;
@@ -53,6 +53,18 @@ public class ImageViewer {
         imageWindow.setVisible(false); //esto es para ocultar el imageview
         imageWindow.setManaged(false); //esto es para ignorar el imageview
         imageWindow.setImage(null);
+    }
+
+    //y si borro este tampoco anda
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    //literalmente yo
+    public void alwaysOnTop(boolean isSelected) {
+        if (stage != null) {
+            stage.setAlwaysOnTop(isSelected);
+        }
     }
 
     public void rotateRight() {
@@ -95,7 +107,7 @@ public class ImageViewer {
         imageWindow.setScaleX(1);
         imageWindow.setScaleY(1);
 
-        if (checkMirror != null) { //aca hay mucho codigo que se repite con open, hay que separarlo
+        if (checkMirror != null) {
             checkMirror.setSelected(false);
         }
 
