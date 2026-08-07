@@ -14,3 +14,10 @@
   - Añadidos mensajes de consola mostrando el índice de la imágen (dentro de la carpeta seleccionada).
   - Añadido una transformación a lower case todos los archivos dentro de la carpeta seleccionada porque dog.jpg ≠ Dog.JPG.
   - Añadido un poquito de error handling.
+
+- 07082026 K
+  - Agregado boton para Pin (always on top)
+  - Cambiado directoryChooser -> filechooser otra vez
+  - Añadido persistencia de carpeta al abrir un archivo
+  - Refactorizacion de MainController, se separo la logica de navegacion en NavigatorView librando al controller de ocuparse de distintos estados
+  - Se hizo que el filechooser trabaje de forma asincronica
