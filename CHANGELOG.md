@@ -29,3 +29,7 @@
   - Visualización de videos primitiva lista!
   - Añadido switch para imágenes/videos, deja visualizar con el mismo botón (file -> open) imágenes y videos desde la misma carpeta en la misma ventana.
   
+- 07082026 Tommy
+  - Creado ThumbnailService para generar miniaturas rápidas, usando virtual threads para agilizar el consumo de recursos.
+  - Modificado el main-view.fxml para implementar cuadrícula con thumbnails y botón de activar/desactivar visibilidad de dicha galería.
+  - Ajustado MainController para habilitar las 2 previas implementaciones. Notese que el MainController estaría requiriendo una nueva refactorización dentro de poco.

@@ -4,27 +4,32 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.TilePane;
 import javafx.scene.media.MediaView;
 import javafx.stage.Window;
 import org.dsf.imagemirador.Dto.MediaItem;
 import org.dsf.imagemirador.Service.FileScannerService;
+import org.dsf.imagemirador.Service.ThumbnailService;
 import org.dsf.imagemirador.Viewer.ImageViewer;
 import org.dsf.imagemirador.Viewer.MediaViewer;
 
 import java.util.List;
 
 public class MainController {
-
+    @FXML private ScrollPane thumbnailScrollPane;
+    @FXML private TilePane thumbnailGrid;
     @FXML private ImageView imageWindow;
     @FXML private ScrollPane scrollPane;
     @FXML private Group imageGroup;
     @FXML private CheckMenuItem checkMirror;
     @FXML private MediaView mediaWindow;
-
+    @FXML private SplitPane mainSplitPane;
 
     private final FileScannerService fileScannerService = new FileScannerService();
+    private final ThumbnailService thumbnailService = new ThumbnailService();
     private ImageViewer imageViewer;
 
     private List<MediaItem> listFiles;
@@ -35,6 +40,7 @@ public class MainController {
         // le pasamos los elementos al controller imageviewer
         imageViewer = new ImageViewer(imageWindow, scrollPane, imageGroup, checkMirror);
         mediaViewer = new MediaViewer(mediaWindow);
+        mainSplitPane.getItems().remove(thumbnailScrollPane);
     }
 
     @FXML
@@ -46,10 +52,47 @@ public class MainController {
         if (newFiles != null && !newFiles.isEmpty()) {
             this.listFiles = newFiles;
             this.index = 0;
-            System.out.println("Guau guau! Encontré " + listFiles.size() + " archivos compatibles!");
+
+            // 1. Limpiamos la cuadrícula anterior por si abrimos una carpeta nueva
+            if (thumbnailGrid != null) {
+                thumbnailGrid.getChildren().clear();
+            }
+
+            for (MediaItem item : listFiles) {
+                thumbnailService.loadThumbnailAsync(item, thumbnail -> {
+                    // acá van las miniaturasss
+                    ImageView thumbView = new ImageView(thumbnail);
+                    thumbView.setFitWidth(100);
+                    thumbView.setFitHeight(100);
+                    thumbView.setPreserveRatio(true);
+
+                    //cuando clickean a la miniatura, busca la posición y la pasa al visor grande
+                    thumbView.setOnMouseClicked(event -> {
+                        this.index = listFiles.indexOf(item);
+                        showFile();
+                    });
+
+                    // miniatura añadida a la cuadrícula
+                    if (thumbnailGrid != null) {
+                        thumbnailGrid.getChildren().add(thumbView);
+                    }
+                });}
             showFile();
         } else {
             System.out.println("Snif snif, no encontré ningún archivo compatible en esta carpeta...");
+        }
+    }
+    @FXML
+    public void toggleGalleryMethod() {
+        if (mainSplitPane.getItems().contains(thumbnailScrollPane)) {
+            // si está visible, lo sacamos del SplitPane
+            mainSplitPane.getItems().remove(thumbnailScrollPane);
+            System.out.println("Galería ocultada. Fuera fuera.");
+        } else {
+            // sino, lo añadimos en la primera posición (índice 0, izquierda)
+            mainSplitPane.getItems().add(0, thumbnailScrollPane);
+            mainSplitPane.setDividerPositions(0.25); // Le asignamos el 25% del ancho de pantalla
+            System.out.println("Cuadrícula de la galería visiblee");
         }
     }
 
