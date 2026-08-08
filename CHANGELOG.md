@@ -21,3 +21,5 @@
   - Añadido persistencia de carpeta al abrir un archivo
   - Refactorizacion de MainController, se separo la logica de navegacion en NavigatorView librando al controller de ocuparse de distintos estados
   - Se hizo que el filechooser trabaje de forma asincronica
+- 08082026 K
+  - Agregada la view de galería, hice que sea como un overlay transparente
