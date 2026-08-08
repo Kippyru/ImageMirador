@@ -30,6 +30,10 @@ public class MainController {
     private CheckMenuItem checkMirror;
     @FXML
     private CheckMenuItem alwaysOnTop;
+    @FXML
+    private CheckMenuItem checkGallery;
+    @FXML
+    private javafx.scene.Node galleryView;
 
     private final FileScannerService fileScannerService = new FileScannerService();
     private final NavigationViewer navigator = new NavigationViewer();
@@ -45,6 +49,9 @@ public class MainController {
     @FXML
     public void initialize() {
         imageViewer = new ImageViewer(imageWindow, scrollPane, imageGroup, checkMirror);
+        //por default, la galeria inicia oculta
+        galleryView.setVisible(false);
+        galleryView.setManaged(false);
     }
 
     @FXML
@@ -138,5 +145,18 @@ public class MainController {
     public void scrollZoomMethod(ScrollEvent event) {
         imageViewer.scrollZoom(event.getDeltaY());
         event.consume();
+    }
+
+    @FXML
+    public void toggleGalleryMethod() {
+        boolean isVisible = checkGallery.isSelected();
+        galleryView.setVisible(isVisible);
+        galleryView.setManaged(isVisible);
+
+        if (isVisible) {
+            System.out.println("Galeria abierta OwO");
+        } else {
+            System.out.println("Galeria cerrada UnU");
+        }
     }
 }
