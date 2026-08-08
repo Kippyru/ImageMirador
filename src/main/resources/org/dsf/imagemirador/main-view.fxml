@@ -12,7 +12,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dsf.imagemirador.Controller.MainController">
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.dsf.imagemirador.Controller.MainController">
     <children>
         <MenuBar>
             <menus>
@@ -21,27 +22,38 @@
                         <!-- Bueno si acá le cambié el nombre para que coincida con el metodito del service jejeje -->
                         <MenuItem mnemonicParsing="false" onAction="#openMethod" text="Open">
                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
                             </accelerator>
                         </MenuItem>
-                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <SeparatorMenuItem mnemonicParsing="false"/>
                         <MenuItem mnemonicParsing="false" onAction="#closeMethod" text="Close">
                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
                             </accelerator>
                         </MenuItem>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Navigation">
                     <items>
+                        <CheckMenuItem fx:id="checkGallery" mnemonicParsing="false" onAction="#toggleGalleryMethod"
+                                       text="Show Gallery">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </CheckMenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#rightMethod" text="Right">
                             <accelerator>
-                                <KeyCodeCombination alt="DOWN" code="RIGHT" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                                <KeyCodeCombination alt="DOWN" code="RIGHT" control="UP" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
                             </accelerator>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#leftMethod" text="Left">
                             <accelerator>
-                                <KeyCodeCombination alt="DOWN" code="LEFT" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                                <KeyCodeCombination alt="DOWN" code="LEFT" control="UP" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
                             </accelerator>
                         </MenuItem>
                     </items>
@@ -50,61 +62,74 @@
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#rotateRightMethod" text="Rotate Right">
                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="RIGHT" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                <KeyCodeCombination alt="UP" code="RIGHT" control="DOWN" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
                             </accelerator>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#rotateLeftMethod" text="Rotate Left">
                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="LEFT" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                <KeyCodeCombination alt="UP" code="LEFT" control="DOWN" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
                             </accelerator>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#plusZoomMethod" text="Zoom +">
                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="ADD" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                                <KeyCodeCombination alt="UP" code="ADD" control="UP" meta="UP" shift="UP"
+                                                    shortcut="ANY"/>
                             </accelerator>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#minusZoomMethod" text="Zoom -">
                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="MINUS" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                                <KeyCodeCombination alt="UP" code="MINUS" control="UP" meta="UP" shift="UP"
+                                                    shortcut="ANY"/>
                             </accelerator>
                         </MenuItem>
-                        <CheckMenuItem fx:id="checkMirror" mnemonicParsing="false" onAction="#mirrorMethod" text="Mirror">
+                        <CheckMenuItem fx:id="checkMirror" mnemonicParsing="false" onAction="#mirrorMethod"
+                                       text="Mirror">
                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="M" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                <KeyCodeCombination alt="UP" code="M" control="DOWN" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
                             </accelerator>
                         </CheckMenuItem>
-                  <CheckMenuItem fx:id="alwaysOnTop" mnemonicParsing="false" onAction="#alwaysOnTopMethod" text="Pin">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="SPACE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-                  </CheckMenuItem>
-                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <CheckMenuItem fx:id="alwaysOnTop" mnemonicParsing="false" onAction="#alwaysOnTopMethod"
+                                       text="Pin">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="SPACE" control="DOWN" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </CheckMenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
                         <MenuItem mnemonicParsing="false" onAction="#restoreMethod" text="Restore">
                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
                             </accelerator>
                         </MenuItem>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" text="About"/>
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
-        <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+        <StackPane VBox.vgrow="ALWAYS">
+            <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true"
+                        vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                <content>
+                    <StackPane fx:id="centerPane" alignment="CENTER">
 
-            <content>
-                <StackPane fx:id="centerPane" alignment="CENTER">
+                        <Group fx:id="imageGroup" onScroll="#scrollZoomMethod">
+                            <ImageView fx:id="imageWindow" preserveRatio="true"/>
+                        </Group>
 
-                    <Group fx:id="imageGroup" onScroll="#scrollZoomMethod">
-                        <ImageView fx:id="imageWindow" preserveRatio="true" />
-                    </Group>
+                    </StackPane>
+                </content>
 
-                </StackPane>
-            </content>
-
-        </ScrollPane>
+            </ScrollPane>
+            <!-- aca se inyecta la subvista de la galería al final del VBox -->
+            <fx:include fx:id="galleryView" source="gallery-view.fxml" StackPane.alignment="BOTTOM_CENTER"/>
+        </StackPane>
     </children>
 </VBox>
