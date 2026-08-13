@@ -1,7 +1,7 @@
 package org.dsf.imagemirador.Service;
 
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Window;
+import javafx.concurrent.Task;
+import javafx.stage.FileChooser;
 import org.dsf.imagemirador.Dto.MediaItem;
 
 import java.io.File;
@@ -15,42 +15,70 @@ import java.util.stream.Stream;
 
 public class FileScannerService {
 
-    private static final List<String> SUPPORTED_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".gif", ".jfif", ".bmp", ".mp4", ".mov");
+    private File lastDirectory;
+    private List<MediaItem> cachedFiles = new ArrayList<>();
+    private int selectedFileIndex = 0;
 
-    public List<MediaItem> openMethod(Window window) {
-        //cambiado filechooser por directorychooser, por ahora está bien
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Selecciona tu carpeta con archivos uwu");
+    // formatos permitidos
+    private static final List<String> SUPPORTED_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".gif", ".bmp", ".mp4", ".jfif", ".mov");
 
-        // Abre el diálogo para elegir la carpeta, aviso que testeando veo que NO se actualiza en tiempo real; no muestra imágenes nuevas y las que se quiten dan blanco,
-        // pero siguen ocupando el espacio en el array, capaaaz con un "refresh" cada tantito se resuelva? Más adelante veré
-        File selectedDirectory = directoryChooser.showDialog(window);
-
-        // carpeta vacía, devuelve array vacío
-        if (selectedDirectory == null) {
-            return new ArrayList<>();
-        }
-
-        return scanDirectory(selectedDirectory.toPath());
+    public File getLastDirectory() {
+        return lastDirectory;
     }
 
-    private List<MediaItem> scanDirectory(Path directoryPath) {
-        // esto de acá es para ver solamente archivos superficiales sin entrar a subcarpetitas, por ahora está bien pero más adelante podríamos cambiarlo
-        // a Files.walk para explorar subdirectorios
+    //devuelve un Task para que ande en segundo plano
+    public Task<List<MediaItem>> createScanTask(File selectedFile) {
+        return new Task<>() {
+            @Override
+            protected List<MediaItem> call() throws Exception {
+                lastDirectory = selectedFile.getParentFile();
+                cachedFiles = scanAndCacheDirectory(lastDirectory.toPath());
+                selectedFileIndex = findFileIndex(selectedFile.getName());
+                return cachedFiles;
+            }
+        };
+    }
+
+    public FileChooser.ExtensionFilter getSupportedExtensionsFilter() {
+        return new FileChooser.ExtensionFilter(
+                "Archivos Soportados",
+                SUPPORTED_EXTENSIONS.stream()
+                        .map(ext -> ext.startsWith(".") ? "*" + ext : "*." + ext)
+                        .toArray(String[]::new)
+        );
+    }
+
+    //escaneo y creacion de DTOs
+    private List<MediaItem> scanAndCacheDirectory(Path directoryPath) {
         try (Stream<Path> paths = Files.list(directoryPath)) {
             return paths
-                    .filter(Files::isRegularFile) // mira si el archivo está ahi en la superficie nomás
-                    .filter(this::isSupportedFile) // y acá filtra dentro del directorio
+                    .filter(Files::isRegularFile)
+                    .filter(this::isSupportedFile)
+                    .sorted()
                     .map(path -> new MediaItem(
                             path.toUri().toString(),
                             path.getFileName().toString(),
-                            "IMAGE"
+                            MediaItem.MediaType.IMAGE
                     ))
-                    .collect(Collectors.toList()); // Lo convierte a List<MediaItem>
+                    .collect(Collectors.toList());
         } catch (IOException e) {
-            System.err.println("Ehmm... rrror al leer la carpeta: " + e.getMessage());
+            System.err.println("Ehm... Error al leer la carpeta: " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    //para que sepa donde esta parado basicamente y abra esa imagen seleccionada especifica despues en el controller
+    private int findFileIndex(String fileName) {
+        for (int i = 0; i < cachedFiles.size(); i++) {
+            if (cachedFiles.get(i).name().equals(fileName)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public int getSelectedFileIndex() {
+        return selectedFileIndex;
     }
 
     private boolean isSupportedFile(Path path) {
