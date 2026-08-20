@@ -48,6 +48,12 @@
 - 08082026 K 
   - Agregada la view de galería, hice que sea como un overlay transparente
 
-- 13082023 Tommy
+- 13082026 Tommy
   - Refactorización/Integración las 2 ramas developer de cada integrante en 1.
   
+- 18082026 Tommy
+  - Refactorización de MainController.
+  - Restablecido GalleryController y gallery-view.fxml.
+
+- 19082026 Tommy
+  - Desarrollado GalleryController y extendido gallery-view.fxml

@@ -32,7 +32,7 @@ public class ThumbnailService {
         });
     }
 
-    // Esto es para apagarr cuando se cierra la app
+    // esto es para apagarr cuando se cierra la app
     public void shutdown() {
         virtualExecutor.shutdown();
     }

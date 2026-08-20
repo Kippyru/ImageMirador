@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.Group?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
 
@@ -39,6 +35,13 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Navigation">
                     <items>
+                        <!-- control de la galería -->
+                        <CheckMenuItem fx:id="checkGallery" mnemonicParsing="false" onAction="#toggleGalleryMethod" text="Show Gallery">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                            </accelerator>
+                        </CheckMenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#rightMethod" text="Right">
                             <accelerator>
                                 <KeyCodeCombination alt="DOWN" code="RIGHT" control="UP" meta="UP" shift="UP" shortcut="UP" />
@@ -78,7 +81,6 @@
                                 <KeyCodeCombination alt="UP" code="M" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                             </accelerator>
                         </CheckMenuItem>
-                        <!-- Integración del Pin (Always on Top) -->
                         <CheckMenuItem fx:id="alwaysOnTop" mnemonicParsing="false" onAction="#alwaysOnTopMethod" text="Pin">
                             <accelerator>
                                 <KeyCodeCombination alt="UP" code="SPACE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -92,45 +94,25 @@
                         </MenuItem>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
-                    </items>
-                </Menu>
             </menus>
         </MenuBar>
 
-        <ToolBar>
-            <items>
-                <!-- Prender/Apagar la galería -->
-                <Button mnemonicParsing="false" onAction="#toggleGalleryMethod" text="Gallery" />
-            </items>
-        </ToolBar>
+        <!-- apilar sin redimensionar -->
+        <StackPane VBox.vgrow="ALWAYS">
+            <!-- Principal visor -->
+            <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                <content>
+                    <StackPane fx:id="centerPane" alignment="CENTER">
+                        <MediaView fx:id="mediaWindow" managed="false" visible="false" />
+                        <Group fx:id="imageGroup" onScroll="#scrollZoomMethod">
+                            <ImageView fx:id="imageWindow" preserveRatio="true" />
+                        </Group>
+                    </StackPane>
+                </content>
+            </ScrollPane>
 
-        <!-- Esto es para cambiarle el tamaño a la cuadricula -->
-        <SplitPane fx:id="mainSplitPane" dividerPositions="0.25" VBox.vgrow="ALWAYS">
-            <items>
-                <!-- Cuadrícula -->
-                <!-- aca se inyecta la subvista de la galería al final del VBox -->
-                <ScrollPane fx:id="thumbnailScrollPane" fitToWidth="true" hbarPolicy="NEVER" pannable="true" prefWidth="220" minWidth="120">
-                    <content>
-                        <!-- Acomodoo automático de las miniaturas -->
-                        <TilePane fx:id="thumbnailGrid" hgap="10" vgap="10" prefColumns="2" style="-fx-padding: 10;" />
-                    </content>
-                </ScrollPane>
-
-                <!-- Principal visor -->
-                <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER">
-                    <content>
-                        <StackPane fx:id="centerPane" alignment="CENTER">
-                            <MediaView fx:id="mediaWindow" managed="false" visible="false" />
-                            <Group fx:id="imageGroup" onScroll="#scrollZoomMethod">
-                                <ImageView fx:id="imageWindow" preserveRatio="true" />
-                            </Group>
-                        </StackPane>
-                    </content>
-                </ScrollPane>
-            </items>
-        </SplitPane>
+            <!-- aca se inyecta la subvista de la galería al final del VBox -->
+            <fx:include fx:id="galleryView" source="gallery-view.fxml" StackPane.alignment="BOTTOM_CENTER"/>
+        </StackPane>
     </children>
 </VBox>

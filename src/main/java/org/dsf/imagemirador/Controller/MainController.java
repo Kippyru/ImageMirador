@@ -5,9 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
@@ -25,15 +25,16 @@ import java.util.List;
 
 public class MainController {
 
-    @FXML private ScrollPane thumbnailScrollPane;
-    @FXML private TilePane thumbnailGrid;
     @FXML private ImageView imageWindow;
     @FXML private ScrollPane scrollPane;
     @FXML private Group imageGroup;
     @FXML private CheckMenuItem checkMirror;
     @FXML private CheckMenuItem alwaysOnTop;
+    @FXML private CheckMenuItem checkGallery;
     @FXML private MediaView mediaWindow;
-    @FXML private SplitPane mainSplitPane;
+
+    @FXML private javafx.scene.Node galleryView;
+    @FXML private GalleryController galleryViewController;
 
     private final FileScannerService fileScannerService = new FileScannerService();
     private final ThumbnailService thumbnailService = new ThumbnailService();
@@ -42,7 +43,6 @@ public class MainController {
     private ImageViewer imageViewer;
     private MediaViewer mediaViewer;
     private Stage stage;
-
 
     //el controlador recibe el Stage
     public void setStage(Stage stage) {
@@ -57,7 +57,10 @@ public class MainController {
         // le pasamos los elementos al controller imageviewer
         imageViewer = new ImageViewer(imageWindow, scrollPane, imageGroup, checkMirror);
         mediaViewer = new MediaViewer(mediaWindow);
-        mainSplitPane.getItems().remove(thumbnailScrollPane);
+
+        //por default, la galeria inicia oculta
+        galleryView.setVisible(false);
+        galleryView.setManaged(false);
     }
 
     @FXML
@@ -65,12 +68,9 @@ public class MainController {
         System.out.println("Snif snif SNIIIF a ver busco tu cuestión...");
         Window window = imageWindow.getScene().getWindow();
 
-
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Elegí un archivo");
-        //filtro de extensiones
         fileChooser.getExtensionFilters().add(fileScannerService.getSupportedExtensionsFilter());
-        //filtro de todos los archivos
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Todos los archivos", "*.*"));
 
         File lastDir = fileScannerService.getLastDirectory();
@@ -79,8 +79,10 @@ public class MainController {
         }
 
         File selectedFile = fileChooser.showOpenDialog(window);
-        if (selectedFile == null) return;
-
+        if (selectedFile == null) {
+            System.out.println("Selección cance-helada");
+            return;
+        }
 
         //se crea el Task para seleccionar archivos
         Task<List<MediaItem>> scanTask = fileScannerService.createScanTask(selectedFile);
@@ -93,36 +95,42 @@ public class MainController {
                 navigator.load(loadedFiles, startingIndex);
                 System.out.println("Guau guau! Encontré " + navigator.getTotal() + " archivos compatibles!");
 
-                // Carga interactiva de la cuadrícula
+                // limpiamos la cuadrícula anterior por si abrimos una carpeta nueva
+                TilePane thumbnailGrid = galleryViewController.getTilePane();
                 if (thumbnailGrid != null) thumbnailGrid.getChildren().clear();
 
                 for (MediaItem item : loadedFiles) {
                     thumbnailService.loadThumbnailAsync(item, thumbnail -> {
+                        // acá van las miniaturasss
                         ImageView thumbView = new ImageView(thumbnail);
-                        // acá van las mini miniaturasss
                         thumbView.setFitWidth(100);
                         thumbView.setFitHeight(100);
                         thumbView.setPreserveRatio(true);
 
-                        thumbView.setOnMouseClicked(e -> {
+                        // otro contenedor, este es para que el file se quede si o si en el cuadro de 100x100 centrado
+                        StackPane thumbContainer = new StackPane(thumbView);
+                        thumbContainer.setPrefSize(100, 100);
+
+                        //cuando clickean a la miniatura, busca la posición y la pasa al visor grande
+                        thumbContainer.setOnMouseClicked(e -> {
                             navigator.setIndex(loadedFiles.indexOf(item));
                             showFile();
                         });
 
                         // miniatura añadida a la cuadrícula
-                        if (thumbnailGrid != null) thumbnailGrid.getChildren().add(thumbView);
+                        if (thumbnailGrid != null) thumbnailGrid.getChildren().add(thumbContainer);
                     });
                 }
 
-                // Mostrar galería automáticamente si está cerrada
-                if (!mainSplitPane.getItems().contains(thumbnailScrollPane)) {
-                    mainSplitPane.getItems().add(0, thumbnailScrollPane);
-                    mainSplitPane.setDividerPositions(0.25);
+                // mostrar galería automáticamente despuéees de elegir el archivo y actualizar el check del menú
+                if (!checkGallery.isSelected()) {
+                    checkGallery.setSelected(true);
+                    toggleGalleryMethod();
                 }
 
                 showFile();
             } else {
-                System.out.println("Snif snif, no encontré ningún archivo compatible...");
+                System.out.println("Snif snif, no encontré ningún archivo compatible en esta carpeta...");
             }
         });
 
@@ -141,16 +149,14 @@ public class MainController {
         MediaItem currentItem = navigator.getCurrent();
         if (currentItem == null) return;
 
+        // limpiamos los 2 visores por las dudas
         imageViewer.clear();
         mediaViewer.clear();
 
-        // forzamos toodo a minúsculas para validar
-        String path = currentItem.path().toLowerCase();
-
-        // switch para ver si es vid o img
-        if (path.endsWith(".mp4") || path.endsWith(".mov")) {
-            System.out.println("Encontré tu videooo, agarra croquetas que empieza");
+        // switch para ver si es vid o img (ahora inteligente con el enum)
+        if (currentItem.type() == MediaItem.MediaType.VIDEO) {
             // si es formato mp4 o mov viene mediaviewer
+            System.out.println("Encontré tu videooo, agarra croquetas que empieza");
             mediaViewer.loadMedia(currentItem);
         } else {
             // si no es video, se lo mandamos al ImageViewer
@@ -160,17 +166,17 @@ public class MainController {
 
     @FXML
     public void toggleGalleryMethod() {
-        // si está visible, lo sacamos del SplitPane
-        if (mainSplitPane.getItems().contains(thumbnailScrollPane)) {
-            mainSplitPane.getItems().remove(thumbnailScrollPane);
-            System.out.println("Galería ocultada. Fuera fuera.");
+        boolean isVisible = checkGallery.isSelected();
+        galleryView.setVisible(isVisible);
+        galleryView.setManaged(isVisible);
+
+        if (isVisible) {
+            System.out.println("Galeria abierta OwO");
         } else {
-            // sino, lo añadimos en la primera posición (índice 0, izquierda)
-            mainSplitPane.getItems().add(0, thumbnailScrollPane);
-            mainSplitPane.setDividerPositions(0.25); // Le asignamos el 25% del ancho de pantalla
-            System.out.println("Cuadrícula de la galería visiblee");
+            System.out.println("Galeria cerrada UnU");
         }
     }
+
     //navegacion, puse alt + right, porq right solo a veces no funciona, o si apreto para rotar tambien cuenta y rota y cambia de imagen
     @FXML
     public void rightMethod() {
@@ -191,12 +197,12 @@ public class MainController {
     @FXML
     public void closeMethod() {
         System.out.println("closeada tu wea >:3c");
-        imageViewer.clear(); // limpia la vista de la imagen
-        mediaViewer.clear(); // limpia la vista del video
-        navigator.clear(); // limpia  el navegador
+        imageViewer.clear();
+        mediaViewer.clear();
+        navigator.clear();
     }
 
-    @FXML public void alwaysOnTopMethod() { imageViewer.alwaysOnTop(alwaysOnTop.isSelected()); }
+    @FXML public void alwaysOnTopMethod() { imageViewer.alwaysOnTop(alwaysOnTop.isSelected()); } //LITERALMENTE YO
     @FXML public void rotateRightMethod() { imageViewer.rotateRight(); }
     @FXML public void rotateLeftMethod() { imageViewer.rotateLeft(); }
     @FXML public void mirrorMethod() { imageViewer.mirror(checkMirror.isSelected()); }

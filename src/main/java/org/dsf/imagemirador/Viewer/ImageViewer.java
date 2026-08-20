@@ -47,7 +47,7 @@ public class ImageViewer {
     public void showImage(MediaItem item) {
         if (item == null) return;
 
-        // Optimización de RAM (limitado a 1920x1080)
+        // limitado a 1920x1080
         Image image = new Image(item.path(), 1920, 1080, true, true);
 
         imageWindow.fitWidthProperty().unbind();
