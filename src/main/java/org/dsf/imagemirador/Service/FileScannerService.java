@@ -58,7 +58,7 @@ public class FileScannerService {
                     .map(path -> new MediaItem(
                             path.toUri().toString(),
                             path.getFileName().toString(),
-                            MediaItem.MediaType.IMAGE
+                            determineMediaType(path)
                     ))
                     .collect(Collectors.toList());
         } catch (IOException e) {
@@ -86,5 +86,14 @@ public class FileScannerService {
         // Esto lo arreglamos haciendo que todito se vuelva minúscula y listoo.
         String fileName = path.getFileName().toString().toLowerCase();
         return SUPPORTED_EXTENSIONS.stream().anyMatch(fileName::endsWith);
+    }
+
+    //determina el tipo de media
+    private MediaItem.MediaType determineMediaType(Path path) {
+        String fileName = path.getFileName().toString().toLowerCase();
+        if (fileName.endsWith(".mp4") || fileName.endsWith(".mov")) {
+            return MediaItem.MediaType.VIDEO;
+        }
+        return MediaItem.MediaType.IMAGE;
     }
 }
