@@ -19,7 +19,8 @@ public class FileScannerService {
     private List<MediaItem> cachedFiles = new ArrayList<>();
     private int selectedFileIndex = 0;
 
-    private static final List<String> SUPPORTED_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".gif", ".bmp");
+    // formatos permitidos
+    private static final List<String> SUPPORTED_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".gif", ".bmp", ".mp4", ".jfif", ".mov");
 
     public File getLastDirectory() {
         return lastDirectory;
@@ -31,10 +32,8 @@ public class FileScannerService {
             @Override
             protected List<MediaItem> call() throws Exception {
                 lastDirectory = selectedFile.getParentFile();
-
                 cachedFiles = scanAndCacheDirectory(lastDirectory.toPath());
                 selectedFileIndex = findFileIndex(selectedFile.getName());
-
                 return cachedFiles;
             }
         };
@@ -42,7 +41,7 @@ public class FileScannerService {
 
     public FileChooser.ExtensionFilter getSupportedExtensionsFilter() {
         return new FileChooser.ExtensionFilter(
-                "Imágenes Soportadas",
+                "Archivos Soportados",
                 SUPPORTED_EXTENSIONS.stream()
                         .map(ext -> ext.startsWith(".") ? "*" + ext : "*." + ext)
                         .toArray(String[]::new)
@@ -63,7 +62,7 @@ public class FileScannerService {
                     ))
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            System.err.println("Error al leer la carpeta: " + e.getMessage());
+            System.err.println("Ehm... Error al leer la carpeta: " + e.getMessage());
             return new ArrayList<>();
         }
     }

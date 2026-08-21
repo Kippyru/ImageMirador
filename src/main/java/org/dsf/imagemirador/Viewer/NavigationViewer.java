@@ -1,7 +1,6 @@
 package org.dsf.imagemirador.Viewer;
 
 import org.dsf.imagemirador.Dto.MediaItem;
-
 import java.util.List;
 
 public class NavigationViewer {
@@ -31,6 +30,13 @@ public class NavigationViewer {
     public MediaItem getCurrent() {
         if (isEmpty()) return null;
         return playlist.get(currentIndex);
+    }
+
+    // Méetodo necesario para saltar a una imagen específica
+    public void setIndex(int index) {
+        if (playlist != null && index >= 0 && index < playlist.size()) {
+            this.currentIndex = index;
+        }
     }
 
     public void clear() {

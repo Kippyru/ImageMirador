@@ -11,6 +11,7 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.media.MediaView?>
 
 <VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.dsf.imagemirador.Controller.MainController">
@@ -37,13 +38,13 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Navigation">
                     <items>
-                        <CheckMenuItem fx:id="checkGallery" mnemonicParsing="false" onAction="#toggleGalleryMethod"
-                                       text="Show Gallery">
+                        <!-- control de la galería -->
+                        <CheckMenuItem fx:id="checkGallery" mnemonicParsing="false" onAction="#toggleGalleryMethod" text="Show Gallery">
                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="UP"
-                                                    shortcut="UP"/>
+                                <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                             </accelerator>
                         </CheckMenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#rightMethod" text="Right">
                             <accelerator>
                                 <KeyCodeCombination alt="DOWN" code="RIGHT" control="UP" meta="UP" shift="UP"
@@ -91,14 +92,12 @@
                                                     shortcut="UP"/>
                             </accelerator>
                         </CheckMenuItem>
-                        <CheckMenuItem fx:id="alwaysOnTop" mnemonicParsing="false" onAction="#alwaysOnTopMethod"
-                                       text="Pin">
+                        <CheckMenuItem fx:id="alwaysOnTop" mnemonicParsing="false" onAction="#alwaysOnTopMethod" text="Pin">
                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="SPACE" control="DOWN" meta="UP" shift="UP"
-                                                    shortcut="UP"/>
+                                <KeyCodeCombination alt="UP" code="SPACE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                             </accelerator>
                         </CheckMenuItem>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#restoreMethod" text="Restore">
                             <accelerator>
                                 <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP"
@@ -107,27 +106,23 @@
                         </MenuItem>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About"/>
-                    </items>
-                </Menu>
             </menus>
         </MenuBar>
+
+        <!-- apilar sin redimensionar -->
         <StackPane VBox.vgrow="ALWAYS">
-            <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true"
-                        vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+            <!-- Principal visor -->
+            <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                 <content>
                     <StackPane fx:id="centerPane" alignment="CENTER">
-
+                        <MediaView fx:id="mediaWindow" managed="false" visible="false" />
                         <Group fx:id="imageGroup" onScroll="#scrollZoomMethod">
-                            <ImageView fx:id="imageWindow" preserveRatio="true"/>
+                            <ImageView fx:id="imageWindow" preserveRatio="true" />
                         </Group>
-
                     </StackPane>
                 </content>
-
             </ScrollPane>
+
             <!-- aca se inyecta la subvista de la galería al final del VBox -->
             <fx:include fx:id="galleryView" source="gallery-view.fxml" StackPane.alignment="BOTTOM_CENTER"/>
         </StackPane>

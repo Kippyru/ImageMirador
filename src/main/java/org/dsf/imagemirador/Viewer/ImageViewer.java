@@ -26,33 +26,8 @@ public class ImageViewer {
         this.imageGroup = imageGroup;
         this.checkMirror = checkMirror;
 
-        //filtros para mantener el ratio
         this.imageWindow.setPreserveRatio(true);
         this.imageWindow.setSmooth(true);
-    }
-
-    public void showImage(MediaItem item) {
-        if (item == null) return;
-
-        Image image = new Image(item.path());
-
-        imageWindow.fitWidthProperty().unbind();
-        imageWindow.fitHeightProperty().unbind();
-
-        imageWindow.setVisible(true);
-        imageWindow.setManaged(true);
-        imageWindow.setImage(image);
-
-        //un restore para no tener zoom ni rotaciónnn
-        restore();
-
-        System.out.println("Con un guau y un miau, lo encontré! Acá está uwu");
-    }
-
-    public void clear() {
-        imageWindow.setVisible(false); //esto es para ocultar el imageview
-        imageWindow.setManaged(false); //esto es para ignorar el imageview
-        imageWindow.setImage(null);
     }
 
     //y si borro este tampoco anda
@@ -67,32 +42,39 @@ public class ImageViewer {
         }
     }
 
-    public void rotateRight() {
-        imageWindow.setRotate(imageWindow.getRotate() + 90);
+    public void showImage(MediaItem item) {
+        if (item == null) return;
+
+        // limitado a 1920x1080
+        Image image = new Image(item.path(), 1920, 1080, true, true);
+
+        imageWindow.fitWidthProperty().unbind();
+        imageWindow.fitHeightProperty().unbind();
+
+        imageWindow.setVisible(true);
+        imageWindow.setManaged(true);
+        imageWindow.setImage(image);
+
+        //un restore para no tener zoom ni rotaciónnn
+        restore();
+        System.out.println("Con un guau y un miau, lo encontré! Acá está uwu");
     }
 
-    public void rotateLeft() {
-        imageWindow.setRotate(imageWindow.getRotate() - 90);
+    public void clear() {
+        imageWindow.setVisible(false);
+        imageWindow.setManaged(false);
+        imageWindow.setImage(null);
     }
 
-    public void mirror(boolean isSelected) { //hago mirror del grupo, si hago de la image interfieren los scale y por eso se rompia
-        imageGroup.setScaleX(isSelected ? -1 : 1);
-    }
-
-    public void zoomIn() {
-        applyZoom(ZOOM_SENSITIVITY);
-    }
-
-    public void zoomOut() {
-        applyZoom(-ZOOM_SENSITIVITY);
-    }
+    public void rotateRight() { imageWindow.setRotate(imageWindow.getRotate() + 90); }
+    public void rotateLeft() { imageWindow.setRotate(imageWindow.getRotate() - 90); }
+    public void mirror(boolean isSelected) { imageGroup.setScaleX(isSelected ? -1 : 1);  }
+    public void zoomIn() { applyZoom(ZOOM_SENSITIVITY); }
+    public void zoomOut() { applyZoom(-ZOOM_SENSITIVITY); }
 
     public void scrollZoom(double deltaY) {
-        if (deltaY > 0) {
-            applyZoom(ZOOM_SENSITIVITY);
-        } else {
-            applyZoom(-ZOOM_SENSITIVITY);
-        }
+        if (deltaY > 0) applyZoom(ZOOM_SENSITIVITY);
+        else applyZoom(-ZOOM_SENSITIVITY);
     }
 
     private void applyZoom(double delta) {
@@ -107,9 +89,7 @@ public class ImageViewer {
         imageWindow.setScaleX(1);
         imageWindow.setScaleY(1);
 
-        if (checkMirror != null) {
-            checkMirror.setSelected(false);
-        }
+        if (checkMirror != null) checkMirror.setSelected(false);
 
         zoom = 1.0;
         imageGroup.setScaleX(zoom);
