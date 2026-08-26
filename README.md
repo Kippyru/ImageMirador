@@ -42,7 +42,7 @@ La aplicación permite la alternancia dinámica y transparente entre gráficos e
 
 Clonar el repositorio:
 ```text
-git clone [https://github.com/Kippyru/ImageMirador](https://github.com/Kippyru/ImageMirador)
+git clone https://github.com/Kippyru/ImageMirador.git
 cd ImageMirador
 ```
 Compilar el proyecto:
