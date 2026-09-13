@@ -57,3 +57,30 @@
 
 - 19082026 Tommy
   - Desarrollado GalleryController y extendido gallery-view.fxml
+
+- 31082026 Tommy
+ - Investigación para persistencia de datos
+ - Acomodo de views.fxml para controles de video 
+
+- 01092026 Tommy
+ - Elegida Gson como librería para guardar objetos a JSON y viceversa
+ - Desarrollo de views.fmxl
+
+- 04092026 Tommy
+ - Refactorización de views.fmxl; adición de video-controls.fxnk
+
+- 05092026 Tommy
+ - Implementación de Gson, persistencia de datos completada
+ - Modificado settingsController
+ - Corregido re-sizing al abrir videos
+ - Implementada lógica de loops
+ - Ajustado Videocontroller y SetMediaViewer 
+ - Formateo de minutos:segundos
+
+- 07092026 Tommy
+- Ultimados detalles de controles de video
+- Slider de vol y reproducción
+
+- 12092026 Tommy
+ - Reformateo de GUI a inglés
+

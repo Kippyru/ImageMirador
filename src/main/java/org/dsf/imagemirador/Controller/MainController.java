@@ -52,6 +52,9 @@ public class MainController {
     private ThemeManager themeManager;
     private ConfigService configService;
 
+    //variable para establecer un tiempo de descanso entre cambio de file a file
+    private long lastSwitchTime = 0;
+
     public ThemeManager getThemeManager() {
         return themeManager;
     }
@@ -224,6 +227,9 @@ public class MainController {
     //navegacion, puse alt + right, porq right solo a veces no funciona, o si apreto para rotar tambien cuenta y rota y cambia de imagen
     @FXML
     public void rightMethod() {
+        // Si pasaron menos de 250 milisegundos desde el último cambio, ignoramos la tecla
+        if (System.currentTimeMillis() - lastSwitchTime < 250) return;
+        lastSwitchTime = System.currentTimeMillis();
         if (navigator.next() != null) {
             showFile();
             System.out.println("Derecha uwu -> Viendo archivo " + (navigator.getIndex() + 1) + " de " + navigator.getTotal());
@@ -232,6 +238,9 @@ public class MainController {
 
     @FXML
     public void leftMethod() {
+        // Si pasaron menos de 250 milisegundos desde el último cambio, ignoramos la tecla
+        if (System.currentTimeMillis() - lastSwitchTime < 250) return;
+        lastSwitchTime = System.currentTimeMillis();
         if (navigator.previous() != null) {
             showFile();
             System.out.println("Izquierda uwu -> Viendo archivo " + (navigator.getIndex() + 1) + " de " + navigator.getTotal());
@@ -240,6 +249,7 @@ public class MainController {
 
     @FXML
     public void closeMethod() {
+
         System.out.println("closeada tu wea >:3c");
         imageViewer.clear();
         mediaViewer.clear();

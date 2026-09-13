@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.geometry.Insets?>
 
-<!-- Agregamos maxWidth="800" para que la barra no se vuelva gigante en monitores anchos -->
+
 <HBox fx:id="videoControlsBox" alignment="CENTER" managed="false" spacing="15.0" visible="false"
       maxWidth="800" maxHeight="-Infinity"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"

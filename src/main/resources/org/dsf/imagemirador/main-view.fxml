@@ -12,9 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
-<!-- Las importaciones de los controles ya no van aquí porque viven en su propio FXML -->
 
-<!-- Cambiamos la versión a 21 para evitar el Warning en consola -->
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dsf.imagemirador.Controller.MainController">
     <children>
         <MenuBar>
@@ -122,7 +120,7 @@
                 </content>
             </ScrollPane>
 
-            <!-- Aca se inyectan los controles de video -->
+            <!-- aca se inyectan los controles de video -->
             <fx:include fx:id="videoControls" source="video-controls.fxml" StackPane.alignment="BOTTOM_CENTER" />
 
             <!-- aca se inyecta la subvista de la galería al final del VBox -->

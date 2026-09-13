@@ -81,7 +81,7 @@ public class ConfigService {
         });
     }
 
-    // Métoodo extra para exponer la configuración a otros controladores (para el KAN-27)
+    // Métoodo extra para exponer la configuración a otros controladores
     public AppConfig getConfig() {
         if (currentConfig == null) loadConfig();
         return currentConfig;

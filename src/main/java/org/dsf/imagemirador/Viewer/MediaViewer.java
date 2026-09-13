@@ -55,7 +55,10 @@ public class MediaViewer {
 
             // hacemos el nuevo reproductor
             mediaPlayer = new MediaPlayer(media);
-
+            mediaPlayer.setOnError(() -> {
+                System.err.println(" Erroooor del playeeeer oh noo ");
+                System.err.println("Motivo: " + mediaPlayer.getError().getMessage());
+            });
             // enchufaaa a la pantalla MediaView, lo hace mediaplayer al... si, al mediaplayer(nuestro)
             mediaView.setMediaPlayer(mediaPlayer);
 
@@ -68,6 +71,11 @@ public class MediaViewer {
 
             //checkea si la duración del video es menor que la setteada en la config
             mediaPlayer.setOnReady(() -> {
+                //esto es ponele un "click invisible", porque hay videos que por algún tema de compresión
+                //codificación o lo que sea, terminan sin reproducirse bien sino tienen un click chiquito en la barrita de play
+                //ahora lo comento porquee rompe algunos videos que SI andan bien
+                mediaPlayer.seek(Duration.millis(1));
+
                 double durationInSeconds = media.getDuration().toSeconds();
 
                 // conecta controles sliders y textitoos

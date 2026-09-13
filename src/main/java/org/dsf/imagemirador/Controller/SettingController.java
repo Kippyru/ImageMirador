@@ -34,7 +34,7 @@ public class SettingController {
 
     public void setConfigService(ConfigService configService) {
         this.configService = configService;
-        setupPlaybackUI(); // Llamamos a configurar la UI de video en cuanto recibimos el servicio
+        setupPlaybackUI(); // a configurar la UI de video en cuanto recibe el servicio
     }
 
     private void setupUI() {
@@ -55,23 +55,23 @@ public class SettingController {
 
         AppConfig config = configService.getConfig();
 
-        // 1. Cargar valores actuales en la interfaz
+        // cargar valores actuales en interfaz
         loopCheckBox.setSelected(config.isAutoplayShortVideos());
         secondsField.setText(String.valueOf(config.getMaxShortVideoSeconds()));
 
-        // 2. Guardar automáticamente cuando se hace clic en el CheckBox
+        // guardar automáticamente cuando se hace clic en el CheckBox
         loopCheckBox.selectedProperty().addListener((obs, old, newVal) -> {
             config.setAutoplayShortVideos(newVal);
             configService.saveConfig();
         });
 
-        // 3. Guardar automáticamente cuando se cambia el número
+        // guardar cuando se cambia el número
         secondsField.textProperty().addListener((obs, old, newVal) -> {
             if (!newVal.matches("\\d*")) {
-                // Si el usuario escribe letras, las borramos forzando solo números
+                // forzando solo números
                 secondsField.setText(newVal.replaceAll("[^\\d]", ""));
             } else if (!newVal.isEmpty()) {
-                // Si es un número válido, lo guardamos en la config
+                // guardamos en la config
                 int seconds = Integer.parseInt(newVal);
                 config.setMaxShortVideoSeconds(seconds);
                 configService.saveConfig();
@@ -82,7 +82,7 @@ public class SettingController {
 
     public void applyThemeToSettings(ThemeManager.Theme theme) {
         if (settingsStage == null) {
-            System.out.println("settingsstage es null");
+            System.out.println("settingsstage es null oh nuuu");
             return;
         }
 
@@ -117,6 +117,6 @@ public class SettingController {
 
 
     private void updateThemeLabel() {
-        themeLabel.setText("Tema actual: " + themeManager.getCurrentTheme().getDisplayName());
+        themeLabel.setText("Current theme: " + themeManager.getCurrentTheme().getDisplayName());
     }
 }

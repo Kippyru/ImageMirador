@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<!-- Aumentamos el tamaño a 480x300 para que tu nuevo texto largo entre perfecto -->
+
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.dsf.imagemirador.Controller.SettingController"

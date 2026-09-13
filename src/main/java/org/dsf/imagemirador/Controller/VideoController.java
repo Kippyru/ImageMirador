@@ -18,7 +18,7 @@ public class VideoController {
     public void setMediaViewer(MediaViewer mediaViewer) {
         this.mediaViewer = mediaViewer;
 
-        // ¡Magia aquí! Le entregamos los controles al visor para que los conecte al video
+        // visor recibe controles para el video
         if (this.mediaViewer != null) {
             this.mediaViewer.linkControls(progressSlider, volumeSlider, timeLabel);
         }
@@ -34,7 +34,7 @@ public class VideoController {
         if (mediaViewer != null) mediaViewer.pauseMedia();
     }
 
-    // Método público para que el MainController pueda encender/apagar la barra
+    // métoodo público para que el MainController pueda encender/apagar la barrita de reproducción
     public void setVisible(boolean visible) {
         videoControlsBox.setVisible(visible);
         videoControlsBox.setManaged(visible);
