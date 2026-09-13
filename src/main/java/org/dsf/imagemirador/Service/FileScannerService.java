@@ -48,6 +48,15 @@ public class FileScannerService {
         );
     }
 
+    private MediaItem.MediaType determineMediaType(Path path) {
+        String fileName = path.getFileName().toString().toLowerCase();
+        if (fileName.endsWith(".mp4") || fileName.endsWith(".mov")) {
+            return MediaItem.MediaType.VIDEO;
+        }
+        return MediaItem.MediaType.IMAGE;
+    }
+
+
     //escaneo y creacion de DTOs
     private List<MediaItem> scanAndCacheDirectory(Path directoryPath) {
         try (Stream<Path> paths = Files.list(directoryPath)) {
@@ -86,14 +95,5 @@ public class FileScannerService {
         // Esto lo arreglamos haciendo que todito se vuelva minúscula y listoo.
         String fileName = path.getFileName().toString().toLowerCase();
         return SUPPORTED_EXTENSIONS.stream().anyMatch(fileName::endsWith);
-    }
-
-    //determina el tipo de media
-    private MediaItem.MediaType determineMediaType(Path path) {
-        String fileName = path.getFileName().toString().toLowerCase();
-        if (fileName.endsWith(".mp4") || fileName.endsWith(".mov")) {
-            return MediaItem.MediaType.VIDEO;
-        }
-        return MediaItem.MediaType.IMAGE;
     }
 }
